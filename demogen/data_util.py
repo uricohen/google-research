@@ -20,6 +20,7 @@ import tensorflow as tf
 
 
 def get_input(
+    data_dir,
     batch_size=50,
     augmented=False,
     data='cifar10',
@@ -65,10 +66,10 @@ def get_input(
     """Input function to be returned."""
     prob = problems.problem(problem_name)
     if data == 'image_cifar100':
-      dataset = prob.dataset(mode, preprocess=augmented)
+      dataset = prob.dataset(mode, data_dir, preprocess=augmented)
       if not augmented: dataset = dataset.map(map_func=standardization)
     else:
-      dataset = prob.dataset(mode)
+      dataset = prob.dataset(mode, data_dir)
       dataset = dataset.map(map_func=standardization)
 
     dataset = dataset.batch(batch_size)

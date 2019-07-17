@@ -21,9 +21,10 @@ the training dataset.
 
   Typical usage example:
 
-  root_dir = # directory where the dataset is at
+  root_dir = # directory where the models are
+  data_dir = # directory where the dataset is
   model_config = ModelConfig(...)
-  input_fn = data_util.get_input(
+  input_fn = data_util.get_input(data_dir,
       data=model_config.dataset, data_format=model_config.data_format)
   margins = compute_margin(input_fn, root_dir, model_config)
   input_margins = margins['inputs']
@@ -65,7 +66,8 @@ def compute_margin(
     A dictionary that maps each layer's name to the margins at that layer
     over the entire training set.
   """
-  param_path = model_config.get_model_dir_name(root_dir)
+  #param_path = model_config.get_model_dir_name(root_dir)
+  param_path = model_config.get_checkpoint_path(root_dir)
   model_fn = model_config.get_model_fn()
 
   if not sess:
@@ -83,8 +85,7 @@ def compute_margin(
 
   loss_layers = ['inputs', 'h1', 'h2', 'h3']
   end_points_collection = {}
-  logits = model_fn(image, is_training=False, perturb_points=loss_layers,
-                    normalizer_collection=None,
+  logits = model_fn(image, is_training=False, 
                     end_points_collection=end_points_collection)
 
   # set up the graph for computing margin

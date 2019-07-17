@@ -24,18 +24,19 @@ import demogen.data_util as data_util
 import demogen.model_config as mc
 
 
-def load_and_run(model_config, root_dir):
+def load_and_run(model_config, root_dir, data_dir):
   """An example usage of loading and running a model from the dataset.
 
   Args:
     model_config: A ModelConfig object that contains relevant hyperparameters of
       a model.
-    root_dir: Directory containing the dataset
+    root_dir: Directory containing the models
+    data_dir: Directory containing the dataset
   """
   model_path = model_config.get_checkpoint_path(root_dir)
   model_fn = model_config.get_model_fn()
   with tf.Session() as sess:
-    input_fn = data_util.get_input(
+    input_fn = data_util.get_input(data_dir,
         data=model_config.dataset, data_format=model_config.data_format)
     image, _ = input_fn()
     logits = model_fn(image, is_training=False)
@@ -46,16 +47,16 @@ def load_and_run(model_config, root_dir):
 
 def main(_):
   # Please make sure that a root dir is specified before running this script!
-  root_dir = None
+  root_dir = #
+  data_dir = #
 
   model_config = mc.ModelConfig(model_type='nin', dataset='cifar10')
-  load_and_run(model_config, root_dir)
+  load_and_run(model_config, root_dir, data_dir)
   print('Loaded a NIN_CIFAR10 model.')
 
-  # example for resnet cifar100
-  model_config = mc.ModelConfig(
-      model_type='resnet', dataset='cifar100')
-  load_and_run(model_config, root_dir)
+  # example for resnet cifar10
+  model_config = mc.ModelConfig(model_type='resnet', dataset='cifar100')
+  load_and_run(model_config, root_dir, data_dir)
   print('Loaded a RESNET_CIFAR100 model.')
 
 

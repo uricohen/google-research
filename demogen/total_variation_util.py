@@ -20,12 +20,13 @@ of hidden layer over the entire training set.
 
   Typical usage example:
 
-  root_dir = # directory where the dataset is at
+  root_dir = # directory where the models are
+  data_dir = # directory where the dataset is
   model_config = ModelConfig(...)
-  input_fn = data_util.get_input(
+  input_fn = data_util.get_input(data_dir,
       data=model_config.dataset, data_format=model_config.data_format)
-  h1_total_variation = compute_total_variation(input_fn, root_dir, 'h1',
-                                               model_config)
+  h1_total_variation = compute_total_variation(input_fn, root_dir, 
+                                               model_config, 'h1')
 """
 
 from __future__ import division
@@ -63,7 +64,8 @@ def compute_total_variation(
   Returns:
     A scalar that is the total variation at the specified layer.
   """
-  param_path = model_config.get_model_dir_name(root_dir)
+  #param_path = model_config.get_model_dir_name(root_dir)
+  param_path = model_config.get_checkpoint_path(root_dir)
   model_fn = model_config.get_model_fn()
 
   if not sess:
@@ -81,9 +83,7 @@ def compute_total_variation(
 
   loss_layers = [layer]
   end_points_collection = {}
-  _ = model_fn(image, False, perturb_points=loss_layers,
-               normalizer_collection=None,
-               end_points_collection=end_points_collection)
+  _ = model_fn(image, False, end_points_collection=end_points_collection)
 
   layer_activations = [end_points_collection[l] for l in loss_layers]
 
