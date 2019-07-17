@@ -382,7 +382,7 @@ class ResNet(object):
 
     with tf.variable_scope(self._scope, reuse=tf.AUTO_REUSE) as scope:
       self._scope = scope.name
-      if end_points_collection:
+      if end_points_collection is not None:
         end_points_collection['inputs'] = inputs
 
       inputs = conv2d_fixed_padding(
@@ -407,7 +407,7 @@ class ResNet(object):
             name='block_layer{}'.format(i + 1),
             data_format=self.data_format,
             norm_type=self.norm_type)
-        if end_points_collection:
+        if end_points_collection is not None:
           end_points_collection['h{}'.format(i+1)] = inputs
 
       # Only apply the BN and ReLU for model that does pre_activation in each

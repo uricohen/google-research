@@ -158,7 +158,7 @@ class Nin(object):
           activation, self.num_classes, 4, 1, 'VALID', kernel_regularizer=reg)
       logits = tf.reshape(h4, [-1, self.num_classes])
 
-      if end_points_collection:
+      if end_points_collection is not None:
         end_points_collection['inputs'] = inputs
         for name, end_point in zip(['h1', 'h2', 'h3'], all_preactivations):
           end_points_collection[name] = end_point
