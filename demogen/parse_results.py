@@ -3,6 +3,7 @@ import demogen.data_util as data_util
 import demogen.model_config as mc
 import json
 import os
+import scipy.io
 
 root_dir = '../concept/data/demogen_models/'
 data_dir = '../t2t_data/'
@@ -52,6 +53,16 @@ for i in range(len(model_types)):
                                             copy=copy,
                                             root_dir=root_dir)
                   count+=1
-                  print('%d %s' % (count, model_config.get_model_dir_name()))          
+                  filename = os.path.basename(model_config.get_model_dir_name())
+                  print('%d %s' % (count, filename))      
+                  fd = {'model_type':model_type, 'dataset':dataset, 
+                        'wide_multiplier':wide_multiplier, 'batchnorm':batchnorm, 
+                        'dropout_prob':dropout_prob, 'data_augmentation':augmentation, 
+                        'l2_decay_factor':decay_fac, 'normalization':normalization, 
+                        'learning_rate':learning_rate, 'copy':copy,
+                        'filename':filename}
+                  scipy.io.savemat('%s_%s_%s.mat'%(model_type,dataset,filename), fd);
                   #input_fn = data_util.get_input(data_dir, data=model_config.dataset, data_format=model_config.data_format)
+                  
+
   print('Found %d models'%count);
