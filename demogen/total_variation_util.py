@@ -102,7 +102,7 @@ def compute_total_variation(
       activation = np.squeeze(list(sess.run(layer_activations, feed_dict=fd)))
       all_activation.append(activation)
     except tf.errors.OutOfRangeError:
-      print('reached the end of the data')
+      print('reached the end of the data (%d)'%count)
       break
 
   all_activation = np.concatenate(all_activation, axis=0)
