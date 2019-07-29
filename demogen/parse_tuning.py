@@ -61,30 +61,33 @@ for i in range(len(model_types)):
                   name = '%s_%s_%s_tuning.mat'%(model_type,dataset,filename)
                   if os.path.isfile(name):
                     continue
-                  # Training metadata
-                  results = os.path.join(model_config.get_model_dir_name(),'train.json')
-                  with tf._api.v1.io.gfile.GFile(results, 'r') as f:
-                    dd = json.load(f)
-                  train_loss = dd['loss']
-                  train_cross_entropy = dd['CrossEntropy']
-                  train_global_step = dd['global_step']
-                  train_accuracy = dd['Accuracy']
-                  results = os.path.join(model_config.get_model_dir_name(),'eval.json')
-                  # Validation metadata
-                  with tf._api.v1.io.gfile.GFile(results, 'r') as f:
-                    dd = json.load(f)
-                  eval_loss = dd['loss']
-                  eval_cross_entropy = dd['CrossEntropy']
-                  eval_global_step = dd['global_step']
-                  eval_accuracy = dd['Accuracy']
-                  # Other information
-                  input_fn = data_util.get_input(data_dir, data=model_config.dataset, data_format=model_config.data_format, repeat_num=1)
                   try:
+                    # Training metadata
+                    results = os.path.join(model_config.get_model_dir_name(),'train.json')
+                    with tf._api.v1.io.gfile.GFile(results, 'r') as f:
+                      dd = json.load(f)
+                    train_loss = dd['loss']
+                    train_cross_entropy = dd['CrossEntropy']
+                    train_global_step = dd['global_step']
+                    train_accuracy = dd['Accuracy']
+                    results = os.path.join(model_config.get_model_dir_name(),'eval.json')
+                    # Validation metadata
+                    with tf._api.v1.io.gfile.GFile(results, 'r') as f:
+                      dd = json.load(f)
+                    eval_loss = dd['loss']
+                    eval_cross_entropy = dd['CrossEntropy']
+                    eval_global_step = dd['global_step']
+                    eval_accuracy = dd['Accuracy']
+                    # Other information
+                    input_fn = data_util.get_input(data_dir, data=model_config.dataset, data_format=model_config.data_format, repeat_num=1)
                     all_activations, samples_per_object, layer_names, layer_indices, layer_n_neurons = elu.extract_layers(input_fn, root_dir, model_config)
                   except tf.errors.InvalidArgumentError:
                     failures += [filename]
                     continue
                   except tf.errors.NotFoundError:
+                    failures += [filename]
+                    continue
+                  except ValueError:
                     failures += [filename]
                     continue
                   data_titles = np.zeros(len(layer_names), dtype=np.object)
@@ -104,10 +107,10 @@ for i in range(len(model_types)):
                         'train_loss':train_loss, 'train_cross_entropy':train_cross_entropy,
                         'train_global_step':train_global_step, 'train_accuracy':train_accuracy,
                         'filename':filename}
-                  print('Saving %s (%d)' % (filename, count))
+                  print('%s %s %s' % (model_type, dataset, filename))
                   scipy.io.savemat(name, fd);
                   
-
-  print('Found %d models'%count);
-  print('%d models failed'%len(failures))
-  print(failures)
+  #print('Found %d models'%count);
+  if len(failures)>0:
+    print('%d models failed'%len(failures))
+    print(failures)
