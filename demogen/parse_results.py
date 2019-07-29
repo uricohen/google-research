@@ -83,7 +83,7 @@ for i in range(len(model_types)):
                     pass
                   # Other information
                   filename = os.path.basename(model_config.get_model_dir_name())
-                  print('%d %s' % (count, filename))      
+                  print('%s %s %s' % (model_type, dataset, filename))      
                   fd = {'model_type':model_type, 'dataset':dataset, 
                         'wide_multiplier':wide_multiplier, 'batchnorm':batchnorm, 
                         'dropout_prob':dropout_prob, 'data_augmentation':augmentation, 
