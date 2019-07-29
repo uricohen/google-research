@@ -14,8 +14,29 @@
 
 #!/bin/bash
 
+# To run:
+# 1. Create a virtual environment:
+#   virtualenv myenv && source myenv/bin/activate
+# 2. Install dependencies:
+#   pip install -r uq_benchmark_2019/requirements.txt
+# 3. Run tests:
+#   bash uq_benchmark_2019/run.sh
+
 set -e  # exit on error
 
+if [ ! -d robustness_dhtd ]
+then
+  git clone https://github.com/hendrycks/robustness.git robustness_dhtd
+fi
+
 python -m uq_benchmark_2019.array_utils_test
+python -m uq_benchmark_2019.metrics_lib_test
 python -m uq_benchmark_2019.uq_utils_test
+python -m uq_benchmark_2019.calibration_lib_test
 python -m uq_benchmark_2019.mnist.experiment_test
+python -m uq_benchmark_2019.cifar.data_lib_test
+python -m uq_benchmark_2019.cifar.end_to_end_test
+python -m uq_benchmark_2019.criteo.data_lib_test --criteo_dummy_path_for_test=uq_benchmark_2019/criteo/criteo_testdata.tfr
+python -m uq_benchmark_2019.criteo.run_train_test --criteo_dummy_path_for_test=uq_benchmark_2019/criteo/criteo_testdata.tfr
+python -m uq_benchmark_2019.imagenet.data_lib_test
+python -m uq_benchmark_2019.imagenet.end_to_end_test

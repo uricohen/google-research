@@ -53,7 +53,7 @@ def get_input(
   if data == 'image_cifar10' and not augmented:
     problem_name = 'image_cifar10_plain'
 
-  def standardization(example):
+  def preprocess(example):
     """Perform per image standardization on a single image."""
     image = example['inputs']
     image.set_shape([32, 32, 3])
@@ -66,10 +66,10 @@ def get_input(
     prob = problems.problem(problem_name)
     if data == 'image_cifar100':
       dataset = prob.dataset(mode, data_dir, preprocess=augmented)
-      if not augmented: dataset = dataset.map(map_func=standardization)
+      if not augmented: dataset = dataset.map(map_func=preprocess)
     else:
-      dataset = prob.dataset(mode, data_dir)
-      dataset = dataset.map(map_func=standardization)
+      dataset = prob.dataset(mode, data_dir, preprocess=False)
+      dataset = dataset.map(map_func=preprocess)
 
     dataset = dataset.batch(batch_size)
     dataset = dataset.repeat(repeat_num)
