@@ -61,6 +61,7 @@ for i in range(len(model_types)):
                   name = '%s_%s_%s_tuning.mat'%(model_type,dataset,filename)
                   if os.path.isfile(name):
                     continue
+                  print('%s %s %s'%(model_type,dataset,filename));
                   try:
                     # Training metadata
                     results = os.path.join(model_config.get_model_dir_name(),'train.json')
@@ -83,12 +84,15 @@ for i in range(len(model_types)):
                     all_activations, samples_per_object, layer_names, layer_indices, layer_n_neurons = elu.extract_layers(input_fn, root_dir, model_config)
                   except tf.errors.InvalidArgumentError:
                     failures += [filename]
+                    print('Failed reading %s'%filename)
                     continue
                   except tf.errors.NotFoundError:
                     failures += [filename]
+                    print('Failed reading %s'%filename)
                     continue
                   except ValueError:
                     failures += [filename]
+                    print('Failed reading %s'%filename)
                     continue
                   data_titles = np.zeros(len(layer_names), dtype=np.object)
                   data_titles[:] = layer_names
