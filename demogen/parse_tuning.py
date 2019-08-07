@@ -46,6 +46,7 @@ for i in range(len(model_types)):
             for copy in d[key]['copy']:
               for normalization in d[key]['normalization']:
                 for learning_rate in d[key]['learning_rate']:
+                  tf.reset_default_graph()
                   model_config = mc.ModelConfig(model_type=model_type, dataset=dataset,
                                             wide_multiplier=wide_multiplier,
                                             batchnorm=batchnorm,
