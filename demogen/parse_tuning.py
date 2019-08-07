@@ -89,10 +89,13 @@ for i in range(len(model_types)):
                     # Other information
                     input_fn = data_util.get_input(data_dir, data=model_config.dataset, data_format=model_config.data_format, repeat_num=1)
                     all_activations, samples_per_object, layer_names, layer_indices, layer_n_neurons = elu.extract_layers(input_fn, root_dir, model_config)
-                  except tf.errors.InvalidArgumentError:
-                    failures += [filename]
-                    print('Failed reading %s'%filename)
-                    continue
+                  except:
+                    print('Failed to load model')
+                    raise
+                  #except tf.errors.InvalidArgumentError:
+                  #  failures += [filename]
+                  #  print('Failed reading %s'%filename)
+                  #  continue
                   #except tf.errors.NotFoundError:
                   #  failures += [filename]
                   #  print('Failed reading %s'%filename)
