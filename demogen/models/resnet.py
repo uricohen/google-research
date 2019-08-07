@@ -60,10 +60,12 @@ def group_norm(inputs, training, data_format):
     mean, var = tf.nn.moments(inputs_split, [2, 3, 4], keep_dims=True)
     inputs_split = (inputs_split - mean) / tf.sqrt(var + 1e-6)
     # per channel gamma and beta
-    gamma = tf.get_variable('gamma', [1, c, 1, 1],
-                            initializer=tf.constant_initializer(1.0))
-    beta = tf.get_variable('beta', [1, c, 1, 1],
-                           initializer=tf.constant_initializer(0.0))
+    gamma = tf.get_variable('gamma', [c],
+                            initializer=tf.constant_initializer(1.0))                        
+    beta = tf.get_variable('beta', [c],
+                            initializer=tf.constant_initializer(0.0))
+    gamma = tf.reshape(gamma, [1, c, 1, 1])
+    beta = tf.reshape(beta, [1, c, 1, 1])
     output = tf.reshape(inputs_split, [-1, c, h, w]) * gamma + beta
 
   return output
