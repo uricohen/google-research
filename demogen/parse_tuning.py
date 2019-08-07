@@ -80,6 +80,12 @@ for i in range(len(model_types)):
                     eval_cross_entropy = dd['CrossEntropy']
                     eval_global_step = dd['global_step']
                     eval_accuracy = dd['Accuracy']
+                  except tf.errors.NotFoundError as e:
+                    print('Failed to load model results')
+                    print(e)
+                    continue
+
+                  try:
                     # Other information
                     input_fn = data_util.get_input(data_dir, data=model_config.dataset, data_format=model_config.data_format, repeat_num=1)
                     all_activations, samples_per_object, layer_names, layer_indices, layer_n_neurons = elu.extract_layers(input_fn, root_dir, model_config)
@@ -87,14 +93,14 @@ for i in range(len(model_types)):
                     failures += [filename]
                     print('Failed reading %s'%filename)
                     continue
-                  except tf.errors.NotFoundError:
-                    failures += [filename]
-                    print('Failed reading %s'%filename)
-                    continue
-                  except ValueError:
-                    failures += [filename]
-                    print('Failed reading %s'%filename)
-                    continue
+                  #except tf.errors.NotFoundError:
+                  #  failures += [filename]
+                  #  print('Failed reading %s'%filename)
+                  #  continue
+                  #except ValueError:
+                  #  failures += [filename]
+                  #  print('Failed reading %s'%filename)
+                  #  continue
                   data_titles = np.zeros(len(layer_names), dtype=np.object)
                   data_titles[:] = layer_names
                   [MAX_NEURONS, N_LAYERS, N_SAMPLES, N_OBJECTS] = all_activations.shape

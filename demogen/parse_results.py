@@ -79,7 +79,9 @@ for i in range(len(model_types)):
                     eval_cross_entropy = dd['CrossEntropy']
                     eval_global_step = dd['global_step']
                     eval_accuracy = dd['Accuracy']
-                  except tf.errors.NotFoundError:
+                  except tf.errors.NotFoundError as e:
+                    print('Failed to load model results')
+                    print(e)
                     pass
                   # Other information
                   filename = os.path.basename(model_config.get_model_dir_name())
